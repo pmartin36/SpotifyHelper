@@ -1,0 +1,31 @@
+#left {
+    width: 30%;
+    height: 100%;
+    flex: 0 1 auto;
+    background-color: gray;
+}
+
+.main {
+    height: 100%;
+}
+
+table {
+    width: 100%;
+}
+
+.right {
+    display: flex;
+    flex: 0 1 auto;
+    height: 100%;
+    width: 70%;
+}
+
+:host {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    bottom: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+}

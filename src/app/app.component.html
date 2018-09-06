@@ -1,0 +1,36 @@
+<div class='main'>
+  <div id='left'>
+    <div>
+      <input type="text" class="form-control" [(ngModel)]="oauth" placeholder="Enter Spotify OAuth">
+    </div>
+
+    <div *ngIf="oauth || true">
+      <select class="form-control" (change)="selectionChanged($event.target.value)">
+        <option value="favorites">Favorites</option>
+        <option value="recent">Recently Played</option>
+      </select>
+    
+      <div id='properties-container'>
+        <table>
+          <tr>
+            <th>Categories</th>
+            <th>Min</th>
+            <th>Target</th>
+            <th>Max</th>
+          </tr>
+          <tr *ngFor="let p of properties">
+            <td><b>{{p.key}}</b></td>
+            <td><input type="text" class="form-control" [(ngModel)]="p.min"></td>
+            <td><input type="text" class="form-control" [(ngModel)]="p.avg"></td>
+            <td><input type="text" class="form-control" [(ngModel)]="p.max"></td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class='right' *ngIf="oauth || true">
+    <input type="text" [(ngModel)]="genres">
+  </div>
+
+</div>

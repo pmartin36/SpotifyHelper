@@ -1,0 +1,20 @@
+<div>
+  <select class="form-control" (ngModel)="selection">
+    <option value="favorites">Favorites</option>
+    <option value="recent">Recently Played</option>
+  </select>
+
+  <div *ngIf="selection==='recent'">
+
+  </div>
+
+  <div id='properties-container'>
+    <div *ngFor="let p of properties">
+      <b>{{p.key}}</b>:
+      <input type="text" [(ngModel)]="min">
+      <input type="text" [(ngModel)]="avg">
+      <input type="text" [(ngModel)]="max">
+    </div>
+  </div>
+
+</div>
