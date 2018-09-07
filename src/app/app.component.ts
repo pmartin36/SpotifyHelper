@@ -45,7 +45,7 @@ export class AppComponent {
     let uri = newValue === 'favorites' ? 'https://api.spotify.com/v1/me/tracks' : 'https://api.spotify.com/v1/me/player/recently-played';
     uri += '?limit=50';
 
-    const songRequest = this.http.get(uri, {headers});  
+    const songRequest = this.http.get(uri, {headers});
     songRequest.subscribe( (d: any) => {
       const ids = d.items.reduce((a, c) => a += `${c.track.id},`, '').slice(0, -1);
       const artistIds = d.items.reduce((a, c) => a += `${c.track.artists[0].id},`, '').slice(0, -1);
@@ -66,14 +66,14 @@ export class AppComponent {
 
         Object.entries(props).forEach( ([k, v]: [string, any[]]) => {
           if (v.length && typeof v[0] === 'number') {
-            const mean = this.getMean(v);
+            const median = this.getMedian(v);
             this.properties.push({
               key: k,
               min: Math.min(...v),
               max: Math.max(...v),
-              mean: mean,
-              median: this.getMedian(v),
-              avg: mean
+              mean: this.getMean(v),
+              median: median,
+              avg: median
             });
           }
         });
