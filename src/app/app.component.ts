@@ -61,7 +61,7 @@ export class AppComponent {
       this.http.post(`https://api.spotify.com/v1/users/${this.uid}/playlists`, playlistBody, {headers}).subscribe( (p: any) => {
         const id = p.id;
         const songBody = `{ "uris": ${trackUris} }`;
-        this.http.post(`https://api.spotify.com/v1/playlists/${id}/tracks?uris=${trackUris}`, songBody, {headers}).subscribe( s => {
+        this.http.post(`https://api.spotify.com/v1/playlists/${id}/tracks?uris=${trackUris}`, songBody, {headers}).subscribe( success => {
           console.log('success');
         });
       });
