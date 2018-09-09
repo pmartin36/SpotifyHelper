@@ -5,19 +5,59 @@
     background-color: gray;
 }
 
+#left input,
+#left select {
+    margin-top: 0px;
+    margin-bottom: 4%;
+    width: 80%;
+}
+
+#genres {
+    width: 90%;
+}
+
+label {
+    font-weight: bold;
+    margin-bottom: 0px;
+}
+
 .main {
     height: 100%;
+    display: flex;
+    flex-direction: row;
 }
 
 table {
     width: 100%;
 }
 
-.right {
+#center {
+    width: 25%;
+    background-color: indigo;
+    overflow-y: scroll;
     display: flex;
-    flex: 0 1 auto;
-    height: 100%;
-    width: 70%;
+    justify-content: flex-start;
+    flex-direction: column;
+    align-content: center;
+}
+
+#right {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 1 1 auto;
+}
+
+#right input {
+    display: block;
+    margin-bottom: 5px;
+}
+
+#right div {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 :host {
@@ -29,3 +69,76 @@ table {
     left: 0;
     right: 0;
 }
+
+.center-header {
+    margin-top: 5px;
+    margin-left: 20px;
+}
+
+.container {
+    display: inline-block;
+    position: relative;
+    padding-left: 35px;
+    margin-left: 20px;
+    margin-top: 20px;
+    cursor: pointer;
+    vertical-align: middle;
+    font-size: 22px;
+    line-height: 22px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+  
+  /* Hide the browser's default checkbox */
+  .container input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+  }
+  
+  /* Create a custom checkbox */
+  .checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 25px;
+    width: 25px;
+    background-color: #eee;
+  }
+  
+  /* On mouse-over, add a grey background color */
+  .container:hover input ~ .checkmark {
+    background-color: #ccc;
+  }
+  
+  /* When the checkbox is checked, add a blue background */
+  .container input:checked ~ .checkmark {
+    background-color: #2196F3;
+  }
+  
+  /* Create the checkmark/indicator (hidden when not checked) */
+  .checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+  }
+  
+  /* Show the checkmark when checked */
+  .container input:checked ~ .checkmark:after {
+    display: block;
+  }
+  
+  /* Style the checkmark/indicator */
+  .container .checkmark:after {
+    left: 9px;
+    top: 5px;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 3px 3px 0;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+  }

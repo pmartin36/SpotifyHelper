@@ -9,23 +9,21 @@ import { forkJoin } from 'rxjs';
 })
 export class AppComponent {
   properties = [];
-
-  genres: string;
+  name: string;
+  genres: string[] = [];
+  uid: string;
   // tslint:disable-next-line:max-line-length
-  oauth = 'BQC1KeBL0CWdtxj1OltmYwTP1om3OdRaKd3IldrNHupvJ7hsjCs0CulRylZvgzN1X_cMv74GnikqAijVw45S2tresr3BtYbNKGoc8szFyvNtkVl3Qgdq5u9oyf-DNXA_e9iujeqV2J8gjSdjPKUtQXaXWyQjMt9hhAh0ghBj6T7tV0ZIGtMs6NmNfpxBcurFGd-mhOprC7T_fC0OyKetXJY1D3tU7-QNqjjjHkitUWAv_NhLUXoSzgRO59xXjqrs2AilGaIpKAQ4';
+  oauth = '';
+  availableGenres: string[] = [];
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   getMedian( data: any[] ) {
       let median = 0;
       const numsLen = data.length;
       data.sort();
 
-      if ( numsLen % 2 === 0 ) {
-        median = (data[numsLen / 2 - 1] + data[numsLen / 2]) / 2;
-      } else { // is odd
-        median = data[(numsLen - 1) / 2];
-      }
+      median = data[Math.round((numsLen - 1) / 2)];
 
       return median;
   }
@@ -37,6 +35,48 @@ export class AppComponent {
     return total / data.length;
   }
 
+  createPlaylist() {
+    if (!this.name || !this.name.length) {
+      this.name = new Date().toISOString();
+    }
+    const headers = new HttpHeaders()
+                    .set('Accept', 'application/json')
+                    .set('Authorization', `Bearer ${this.oauth}`)
+                    .set('Content-Type', 'application/json');
+
+    let params = `?limit=30&seed_genres=${this.genres}&`;
+    this.properties.forEach( p => {
+      params += `min_${p.key}=${p.min}&max_${p.key}=${p.max}&target_${p.key}=${p.avg}&`;
+    });
+    params = params.slice(0, -1);
+
+    const uri = 'https://api.spotify.com/v1/recommendations' + params;
+    this.http.get(uri, {headers}).subscribe( (s: any) => {
+      const trackUris = s.tracks.reduce( (a, c) => a += c.uri + ',', '').slice(0, -1);
+      const playlistBody = `{
+        "name": "${this.name}",
+        "description": "${this.genres}",
+        "public": false
+      }`;
+      this.http.post(`https://api.spotify.com/v1/users/${this.uid}/playlists`, playlistBody, {headers}).subscribe( (p: any) => {
+        const id = p.id;
+        const songBody = `{ "uris": ${trackUris} }`;
+        this.http.post(`https://api.spotify.com/v1/playlists/${id}/tracks?uris=${trackUris}`, songBody, {headers}).subscribe( s => {
+          console.log('success');
+        });
+      });
+    });
+  }
+
+  checkboxChecked(event: any, genre: string) {
+    const index = this.genres.indexOf(genre);
+    if (index < 0 && this.genres.length < 5) {
+      this.genres.push(genre);
+    } else if (index >= 0) {
+      this.genres.splice(index, 1);
+    }
+  }
+
   selectionChanged(newValue) {
     this.properties = [];
     const obs = [];
@@ -45,17 +85,23 @@ export class AppComponent {
     let uri = newValue === 'favorites' ? 'https://api.spotify.com/v1/me/tracks' : 'https://api.spotify.com/v1/me/player/recently-played';
     uri += '?limit=50';
 
+    // should be moved to only be done once
+    this.http.get('https://api.spotify.com/v1/me', {headers}).subscribe( (m: any) => {
+      this.uid = m.id;
+    });
+
+    this.http.get('https://api.spotify.com/v1/recommendations/available-genre-seeds', {headers}).subscribe( (r: any) => {
+      this.availableGenres = r.genres;
+    });
+
     const songRequest = this.http.get(uri, {headers});
     songRequest.subscribe( (d: any) => {
       const ids = d.items.reduce((a, c) => a += `${c.track.id},`, '').slice(0, -1);
       const artistIds = d.items.reduce((a, c) => a += `${c.track.artists[0].id},`, '').slice(0, -1);
-      obs.push(this.http.get(`https://api.spotify.com/v1/audio-features?ids=${ids}`, {headers}));
-      obs.push(this.http.get(	`https://api.spotify.com/v1/artists?ids=${artistIds}`, {headers}));
 
-      forkJoin(...obs).subscribe( r => {
-        this.genres = r[1].artists.reduce( (a, c) => a += c.genres.toString() + ',', '').slice(0, -1);
+      this.http.get(`https://api.spotify.com/v1/audio-features?ids=${ids}`, {headers}).subscribe( (r: any) => {
         const props = {};
-        r[0].audio_features.forEach(trackFeats => {
+        r.audio_features.forEach(trackFeats => {
           Object.entries(trackFeats).forEach( ([k, v]) => {
             if (!props[k] ) {
               props[k] = [];

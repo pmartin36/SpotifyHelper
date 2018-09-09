@@ -1,11 +1,12 @@
 <div class='main'>
   <div id='left'>
-    <div>
-      <input type="text" class="form-control" [(ngModel)]="oauth" placeholder="Enter Spotify OAuth">
-    </div>
+    <label for="token">OAuth Token</label>
+    <input id='token' type="text" class="form-control" [(ngModel)]="oauth" placeholder="Enter Spotify OAuth">
 
-    <div *ngIf="oauth || true">
-      <select class="form-control" (change)="selectionChanged($event.target.value)">
+    <div *ngIf="oauth">
+      <label for="seed">Seed</label>
+      <select id='seed' class="form-control" (change)="selectionChanged($event.target.value)">
+        <option disabled selected value> -- select an option -- </option>
         <option value="favorites">Favorites</option>
         <option value="recent">Recently Played</option>
       </select>
@@ -29,8 +30,18 @@
     </div>
   </div>
 
-  <div class='right' *ngIf="oauth || true">
-    <input type="text" [(ngModel)]="genres">
+  <div id="center">
+    <div class='center-header' *ngIf="availableGenres.length"><b>Select up to 5 seed genres</b></div>
+    <label class="container" *ngFor="let genre of availableGenres">{{genre}}
+      <input type="checkbox" (click)="checkboxChecked($event, genre)">
+      <span class="checkmark"></span>
+    </label>
   </div>
 
+  <div id="right">
+    <div>
+      <input type="text" [(ngModel)]="name" placeholder="Playlist Name">
+      <button (click)="createPlaylist()">Create Playlist</button>
+    </div>
+  </div>
 </div>
