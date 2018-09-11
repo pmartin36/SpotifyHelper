@@ -7,6 +7,7 @@ import { AppComponent } from './app.component';
 import { LeftComponent } from './left/left.component';
 import { TopComponent } from './top/top.component';
 import { CenterComponent } from './center/center.component';
+import { RouterModule } from '@angular/router';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,11 @@ import { CenterComponent } from './center/center.component';
   imports: [
     BrowserModule,
     FormsModule,
-    HttpClientModule
+    HttpClientModule,
+    RouterModule.forRoot([
+      { path: ':id', component: AppComponent },
+      { path: '**', component: AppComponent }
+    ])
   ],
   providers: [],
   bootstrap: [AppComponent]

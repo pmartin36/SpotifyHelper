@@ -1,11 +1,13 @@
-#left {
-    width: 30%;
-    height: 100%;
-    flex: 0 1 auto;
-    background-color: gray;
+div {
+    color: white;
 }
 
-#left input,
+#left {
+    width: 35%;
+    height: 100%;
+    flex: 0 1 auto;
+}
+
 #left select {
     margin-top: 0px;
     margin-bottom: 4%;
@@ -31,10 +33,38 @@ table {
     width: 100%;
 }
 
+th, td {
+    text-align: center;
+}
+
+tr {
+    line-height: 50px;
+    height: 50px;
+}
+
+td.disabled {
+    color: darkslategray;
+}
+
+td {
+    min-width: 80px;
+    text-align: center;
+}
+
+td input {
+    width: 80%;
+    margin: auto;
+}
+
+input[type="text"]:disabled {
+    background: #888888;
+}
+
 #center {
-    width: 25%;
-    background-color: indigo;
-    overflow-y: scroll;
+    width: 35%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background-color: #303030;
     display: flex;
     justify-content: flex-start;
     flex-direction: column;
@@ -68,21 +98,20 @@ table {
     top: 0;
     left: 0;
     right: 0;
+    background-color: #202020;
 }
 
 .center-header {
     margin-top: 5px;
     margin-left: 20px;
+    font-size: 1.5rem;
 }
 
 .container {
-    display: inline-block;
+    display: block;
     position: relative;
-    padding-left: 35px;
-    margin-left: 20px;
-    margin-top: 20px;
+    
     cursor: pointer;
-    vertical-align: middle;
     font-size: 22px;
     line-height: 22px;
     -webkit-user-select: none;
@@ -90,19 +119,28 @@ table {
     -ms-user-select: none;
     user-select: none;
   }
+
+  #center .container {
+    padding-left: 35px;
+    margin-left: 20px;
+    margin-top: 20px;
+  }
+
+  #center .checkmark {
+    top: 0;
+    left: 0;
+  }
   
   /* Hide the browser's default checkbox */
   .container input {
-    position: absolute;
     opacity: 0;
+    width: 0px;
     cursor: pointer;
   }
   
   /* Create a custom checkbox */
   .checkmark {
     position: absolute;
-    top: 0;
-    left: 0;
     height: 25px;
     width: 25px;
     background-color: #eee;

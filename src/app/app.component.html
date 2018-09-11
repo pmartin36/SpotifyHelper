@@ -1,36 +1,44 @@
 <div class='main'>
   <div id='left'>
-    <label for="token">OAuth Token</label>
-    <input id='token' type="text" class="form-control" [(ngModel)]="oauth" placeholder="Enter Spotify OAuth">
-
-    <div *ngIf="oauth">
+    <div style="margin-left: 25px">
       <label for="seed">Seed</label>
-      <select id='seed' class="form-control" (change)="selectionChanged($event.target.value)">
+      <select id='seed' class="form-control" (change)="selectionChanged($event.target.value)" style="margin-top: 5px">
         <option disabled selected value> -- select an option -- </option>
-        <option value="favorites">Favorites</option>
-        <option value="recent">Recently Played</option>
+        <option value="favorites" [attr.selected]="selection==='favorites'">Favorites</option>
+        <option value="recent" [attr.selected]="selection==='recent'">Recently Played</option>
       </select>
-    
+    </div>
+    <div *ngIf="oauth && oauth.length">
       <div id='properties-container'>
         <table>
           <tr>
             <th>Categories</th>
+            <th>Used</th>
             <th>Min</th>
             <th>Target</th>
             <th>Max</th>
           </tr>
-          <tr *ngFor="let p of properties">
-            <td><b>{{p.key}}</b></td>
-            <td><input type="text" class="form-control" [(ngModel)]="p.min"></td>
-            <td><input type="text" class="form-control" [(ngModel)]="p.avg"></td>
-            <td><input type="text" class="form-control" [(ngModel)]="p.max"></td>
+          <tr *ngFor="let p of properties; let i = index">
+            <td [class.disabled]="!p.active"><b>{{p.key}}</b></td>
+            <td>
+              <label class='container'>
+                  <input type="checkbox" [attr.checked]="p.active ? true : null" (click)="propertyToggle(i)">
+                  <span class="checkmark"></span>
+              </label>
+            </td>
+            <td><input type="text" class="form-control prop-val" [(ngModel)]="p.min" [attr.disabled]="p.active ? null : false"></td>
+            <td><input type="text" class="form-control prop-val" [(ngModel)]="p.avg" [attr.disabled]="p.active ? null : false"></td>
+            <td><input type="text" class="form-control prop-val" [(ngModel)]="p.max" [attr.disabled]="p.active ? null : false"></td>
           </tr>
         </table>
       </div>
+
+      <a href="https://developer.spotify.com/documentation/web-api/reference/browse/get-recommendations/" target="_blank" 
+          style="position: absolute; margin: 20px 0 0 30px; font-weight: bold">What do these mean?</a>
     </div>
   </div>
 
-  <div id="center">
+  <div id="center" *ngIf="oauth && oauth.length">
     <div class='center-header' *ngIf="availableGenres.length"><b>Select up to 5 seed genres</b></div>
     <label class="container" *ngFor="let genre of availableGenres">{{genre}}
       <input type="checkbox" (click)="checkboxChecked($event, genre)">
@@ -38,7 +46,7 @@
     </label>
   </div>
 
-  <div id="right">
+  <div id="right" *ngIf="oauth && oauth.length">
     <div>
       <input type="text" [(ngModel)]="name" placeholder="Playlist Name">
       <button (click)="createPlaylist()">Create Playlist</button>
